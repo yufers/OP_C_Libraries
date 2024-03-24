@@ -6,7 +6,7 @@
 size_t strlen_(const char *begin) {
     char *end = begin;
     while (*end != '\0')
-        end++;
+        end += sizeof(char);
     return end - begin;
 }
 
@@ -105,13 +105,13 @@ char* copy(const char *beginSource, const char *endSource, char *beginDestinatio
 }
 
 int checkIfNotNum(int i) {
-    return i != '2' && i != '5';
+    return i != ' ';
 }
 
 char* copyIf(char *beginSource, const char *endSource, char *beginDestination, int (*f)(int)) {
-    for (char *i = beginSource; i < endSource; i += sizeof(char)) {
+    for (char *i = beginSource; i <= endSource; i += sizeof(char)) {
 
-        if (f(*i)) {
+    if (f(*i)) {
             *beginDestination = *i;
             beginDestination += sizeof(char);
         }
@@ -132,4 +132,18 @@ char* copyIfReverse(char *rbeginSource, const char *rendSource, char *beginDesti
 
     *beginDestination = '\0';
     return beginDestination;
+}
+
+//---------------------------------------------------------------------------------------------------------------
+
+char* getEndOfString(const char *begin) {
+    char *end = begin;
+    while (*end != '\0')
+        end += sizeof(char);
+    return end - 1;
+}
+
+void removeNonLetters(char *s) {
+    char *endSource = getEndOfString(s);
+    char *destination = copyIf(s, endSource, s, isgraph);
 }
