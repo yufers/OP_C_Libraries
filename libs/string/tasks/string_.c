@@ -147,3 +147,21 @@ void removeNonLetters(char *s) {
     char *endSource = getEndOfString(s);
     char *destination = copyIf(s, endSource, s, isgraph);
 }
+
+void removeAdjacentEqualLetters(char *s) {
+    char *endSource = getEndOfString(s);
+    char prev = *s;
+    char *dest = s;
+
+    for (char *i = s + sizeof(char); i <= endSource; i += sizeof(char)) {
+        if(*i != prev) {
+            *dest = prev;
+            dest += sizeof(char);
+            prev = *i;
+        }
+    }
+
+    *dest = *endSource;
+    dest += sizeof(char);
+    *dest = '\0';
+}
