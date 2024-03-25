@@ -21,15 +21,28 @@ char* copy(const char *beginSource, const char *endSource, char *beginDestinatio
 
 int checkIfNotNum(int i);
 char* copyIf(char *beginSource, const char *endSource, char *beginDestination, int (*f)(int));
+char* copyIf2(char *beginSource, const char *endSource, char *beginDestination, int appendStringEnd, int (*f)(int));
 
 char* copyIfReverse(char *rbeginSource, const char *rendSource, char *beginDestination, int (*f)(int));
 
 //---------------------------------------------------------------------------------------------------------------
+
+#define MAX_STRING_SIZE 200
+
+typedef struct WordDescriptor {
+    char *begin; // позиция начала слова
+    char *end; // позиция первого символа, после последнего символа
+} WordDescriptor;
 
 void removeNonLetters(char *s);
 
 void assertString(const char *expected, char *got, char const *fileName, char const *funcName, int line);
 
 void removeAdjacentEqualLetters(char *s);
+
+int getWord(char *beginSearch, WordDescriptor *word);
+void digitToStart(WordDescriptor word);
+void digitInWordShift(WordDescriptor word);
+void wordInStringProcessor(char *beginString, void(*f)(WordDescriptor));
 
 #endif //LAB_STRING__H

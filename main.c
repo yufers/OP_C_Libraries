@@ -103,8 +103,8 @@
 int main() {
 //    test();
 
-    char s[] = "aaaBcddd\0";
-    removeAdjacentEqualLetters(s);
+    char s[] = "a1bcd wv56j ikj69\0";
+    wordInStringProcessor(s, digitInWordShift);
     printf("%s", s);
 
     return 0;

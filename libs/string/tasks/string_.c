@@ -2,8 +2,9 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <memory.h>
+#include "string_.h"
 
-size_t strlen_(const char *begin) {
+size_t strlen_(char *begin) {
     char *end = begin;
     while (*end != '\0')
         end += sizeof(char);
@@ -109,6 +110,10 @@ int checkIfNotNum(int i) {
 }
 
 char* copyIf(char *beginSource, const char *endSource, char *beginDestination, int (*f)(int)) {
+    return copyIf2(beginSource, endSource, beginDestination, 1, f);
+}
+
+char* copyIf2(char *beginSource, const char *endSource, char *beginDestination, int appendStringEnd, int (*f)(int)) {
     for (char *i = beginSource; i <= endSource; i += sizeof(char)) {
 
     if (f(*i)) {
@@ -117,7 +122,10 @@ char* copyIf(char *beginSource, const char *endSource, char *beginDestination, i
         }
     }
 
-    *beginDestination = '\0';
+    if (appendStringEnd) {
+        *beginDestination = '\0';
+    }
+
     return beginDestination;
 }
 
@@ -135,6 +143,8 @@ char* copyIfReverse(char *rbeginSource, const char *rendSource, char *beginDesti
 }
 
 //---------------------------------------------------------------------------------------------------------------
+
+char _stringBuffer[MAX_STRING_SIZE + 1];
 
 char* getEndOfString(const char *begin) {
     char *end = begin;
@@ -164,4 +174,37 @@ void removeAdjacentEqualLetters(char *s) {
     *dest = *endSource;
     dest += sizeof(char);
     *dest = '\0';
+}
+
+int getWord(char *beginSearch, WordDescriptor *word) {
+    word->begin = findNonSpace(beginSearch);
+    if (*word->begin == '\0')
+        return 0;
+    word->end = findSpace(word->begin);
+    return 1;
+}
+
+void digitInWordShift(WordDescriptor word) {
+    digitToStart(word);
+}
+
+void wordInStringProcessor(char *beginString, void(*f)(WordDescriptor)) {
+    char *beginSearch = beginString;
+    WordDescriptor word;
+
+    while (getWord(beginSearch, &word)) {
+// обработка слова
+
+        f(word);
+        beginSearch = word.end;
+    }
+}
+
+void digitToStart(WordDescriptor word) {
+    char *endStringBuffer = copy(word.begin, word.end,
+                                 _stringBuffer);
+    char *recPosition = copyIfReverse(endStringBuffer - 1,
+                                      _stringBuffer - 1,
+                                      word.begin, isdigit);
+    copyIf2(_stringBuffer, endStringBuffer, recPosition, 0, isalpha);
 }
