@@ -193,8 +193,6 @@ void wordInStringProcessor(char *beginString, void(*f)(WordDescriptor)) {
     WordDescriptor word;
 
     while (getWord(beginSearch, &word)) {
-// обработка слова
-
         f(word);
         beginSearch = word.end;
     }
@@ -207,4 +205,51 @@ void digitToStart(WordDescriptor word) {
                                       _stringBuffer - 1,
                                       word.begin, isdigit);
     copyIf2(_stringBuffer, endStringBuffer, recPosition, 0, isalpha);
+}
+
+void digitInWordShift2(WordDescriptor word) {
+    digitToStart2(word);
+}
+
+void wordInStringProcessor2(char *beginString, void(*f)(WordDescriptor)) {
+    char *beginSearch = beginString;
+    WordDescriptor word;
+
+    while (getWord(beginSearch, &word)) {
+        f(word);
+        beginSearch = word.end;
+    }
+}
+
+void digitToStart2(WordDescriptor word) {
+    char *endStringBuffer = copy(word.begin, word.end,
+                                 _stringBuffer);
+    char *recPosition = copyIfReverse(_stringBuffer - 1,
+                                      endStringBuffer - 1,
+                                      word.begin, isdigit);
+    copyIf2(_stringBuffer, endStringBuffer, recPosition, 0, isalpha);
+}
+
+void numToSpace(char *source) {
+    char dest_array[MAX_STRING_SIZE];
+    char *endSource = getEndOfString(source);
+    char *dest = dest_array;
+
+    for (char *i = source; i <= endSource; i += sizeof(char)) {
+        if (isdigit(*i)) {
+            int num = *i - '0' - 1;
+            for (int j = 0; j <= num; j++) {
+                *dest = ' ';
+                dest += sizeof(char);
+            }
+        } else {
+            *dest = *i;
+            dest += sizeof(char);
+        }
+    }
+
+    dest += sizeof(char);
+    *dest = '\0';
+
+    copy(dest_array, dest, source);
 }

@@ -41,8 +41,14 @@ void assertString(const char *expected, char *got, char const *fileName, char co
 void removeAdjacentEqualLetters(char *s);
 
 int getWord(char *beginSearch, WordDescriptor *word);
-void digitToStart(WordDescriptor word);
 void digitInWordShift(WordDescriptor word);
 void wordInStringProcessor(char *beginString, void(*f)(WordDescriptor));
+void digitToStart(WordDescriptor word);
+
+void digitInWordShift2(WordDescriptor word);
+void wordInStringProcessor2(char *beginString, void(*f)(WordDescriptor));
+void digitToStart2(WordDescriptor word);
+
+void numToSpace(char *source);
 
 #endif //LAB_STRING__H

@@ -103,8 +103,8 @@
 int main() {
 //    test();
 
-    char s[] = "a1bcd wv56j ikj69\0";
-    wordInStringProcessor(s, digitInWordShift);
+    char s[MAX_STRING_SIZE] = "abc1d3f\0";
+    numToSpace(s);
     printf("%s", s);
 
     return 0;
