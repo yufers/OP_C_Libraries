@@ -103,8 +103,11 @@
 int main() {
 //    test();
 
-    char s[MAX_STRING_SIZE] = "abc1d3f\0";
-    numToSpace(s);
+    char s[MAX_STRING_SIZE] = "cactus elephant cactus\0";
+    char w1[] = "cactus";
+    char w2[] = "monster";
+
+    replace(s, w1, w2);
     printf("%s", s);
 
     return 0;

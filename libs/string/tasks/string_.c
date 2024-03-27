@@ -231,25 +231,79 @@ void digitToStart2(WordDescriptor word) {
 }
 
 void numToSpace(char *source) {
-    char dest_array[MAX_STRING_SIZE];
-    char *endSource = getEndOfString(source);
-    char *dest = dest_array;
+    copy(source, getEndOfString(source), _stringBuffer);
+    char *endSource = getEndOfString(_stringBuffer);
+    char *recPtr = source;
 
-    for (char *i = source; i <= endSource; i += sizeof(char)) {
-        if (isdigit(*i)) {
-            int num = *i - '0' - 1;
+    for (char *readPtr = _stringBuffer; readPtr <= endSource; readPtr += sizeof(char)) {
+        if (isdigit(*readPtr)) {
+            int num = *readPtr - '0' - 1;
             for (int j = 0; j <= num; j++) {
-                *dest = ' ';
-                dest += sizeof(char);
+                *recPtr = ' ';
+                recPtr += sizeof(char);
             }
         } else {
-            *dest = *i;
-            dest += sizeof(char);
+            *recPtr = *readPtr;
+            recPtr += sizeof(char);
         }
     }
 
-    dest += sizeof(char);
-    *dest = '\0';
+    recPtr += sizeof(char);
+    *recPtr = '\0';
+}
 
-    copy(dest_array, dest, source);
+int findWord(char *beginSearch, WordDescriptor *patternWord, WordDescriptor *resWord) {
+    int counter = 0;
+    int wordLen = patternWord->end - patternWord->begin;
+    char *searchPtr = patternWord->begin;;
+    while (*beginSearch != '\0') {
+        if (*beginSearch == *searchPtr) {
+            counter++;
+            searchPtr += sizeof(char);
+        } else {
+            counter = 0;
+            searchPtr = patternWord->begin;
+        }
+
+        if (counter == wordLen) {
+            resWord->begin = beginSearch - wordLen + 1;
+            resWord->end = beginSearch + 1;
+            return 1;
+        }
+        beginSearch += sizeof(char);
+    }
+    return 0;
+}
+
+void replace(char *source, char *w1, char *w2) {
+    size_t w1Size = strlen_(w1);
+    size_t w2Size = strlen_(w2);
+    WordDescriptor word1 = {w1, w1 + w1Size * sizeof(char)};
+    WordDescriptor word2 = {w2, w2 + w2Size * sizeof(char)};
+    WordDescriptor wordRes;
+
+    char *readPtr, *recPtr;
+
+    if (w1Size >= w2Size) {
+        readPtr = source;
+        recPtr = source;
+    } else {
+        copy(source, getEndOfString(source), _stringBuffer);
+        readPtr = _stringBuffer;
+        recPtr = source;
+    }
+
+    while (findWord(readPtr, &word1, &wordRes)) {
+        if (readPtr != wordRes.begin) {
+            recPtr = copy(readPtr, wordRes.begin - 1, recPtr);
+        }
+        recPtr = copy(word2.begin, word2.end - 1, recPtr);
+        readPtr = wordRes.end;
+    }
+
+    char *readPtrEnd = getEndOfString(readPtr);
+    if (readPtr >= readPtrEnd) {
+        readPtr = copy(readPtr, readPtrEnd, recPtr);
+    }
+    *readPtr = '\0';
 }
