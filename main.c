@@ -104,10 +104,12 @@
 int main() {
 //    test();
 
-    char s[MAX_STRING_SIZE] = "abcba,abba,ftyg\0";
-    int res = countPalindroms(s);
+    char s1[MAX_STRING_SIZE] = "anton abc dot alarm xxxxxxxxx\0";
+    char s2[MAX_STRING_SIZE] = "bot ark calm y r t r\0";
+    char res[MAX_STRING_SIZE];
+    getMixedString(res, s1, s2);
 
-    printf("%d", res);
+    printf("%s", res);
 
     return 0;
 }

@@ -68,4 +68,6 @@ void clearBagOfWords(BagOfWords *bag);
 
 int countPalindroms(char *s);
 
+void getMixedString(char *res, char *s1, char *s2);
+
 #endif //LAB_STRING__H

@@ -409,8 +409,36 @@ int countPalindroms(char *s) {
             wordRes.end -= sizeof(char);
         }
         counter += is_polyndrom;
-
-
     }
     return counter;
+}
+
+void getMixedString(char *res, char *s1, char *s2) {
+    WordDescriptor word1, word2;
+    bool isW1Found, isW2Found;
+    char *beginSearch1 = s1, *beginSearch2 = s2;
+    while ((isW1Found = getWord(beginSearch1, &word1)),
+            (isW2Found = getWord(beginSearch2, &word2)),
+            isW1Found || isW2Found) {
+
+        if (isW1Found) {
+            if (*word1.end == '\0') {
+                *word1.end = ' ';
+            }
+
+            copy(word1.begin, word1.end, res);
+            res += word1.end - word1.begin + 1;
+            beginSearch1 = word1.end;
+        }
+        if (isW2Found) {
+            if (*word2.end == '\0') {
+                *word2.end = ' ';
+            }
+
+            copy(word2.begin, word2.end, res);
+            res += word2.end - word2.begin + 1;
+            beginSearch2 = word2.end;
+        }
+    }
+    *res = '\0';
 }
