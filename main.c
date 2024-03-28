@@ -4,6 +4,7 @@
 #include "libs/data_structures/vector/vector.h"
 #include "libs/string/tasks/string_.h"
 
+
 //size_t test_strlen_() {
 //    char *s = "abcdefg";
 //
@@ -103,15 +104,15 @@
 int main() {
 //    test();
 
-    char s[MAX_STRING_SIZE] = "abcd abc vfdj\0";
+    char s[MAX_STRING_SIZE] = "abc abcd vfdj\0";
 
-//    BagOfWords bof;
-//    bof.size = 0;
-//    getBagOfWords(&bof, s);
-//    printBagOfWordsReverse(&bof);
+    BagOfWords _bag;
 
-    int res = isOrdered(s);
-    printf("%d", res);
+    clearBagOfWords(&_bag);
+    getBagOfWords(&_bag, s);
+    printBagOfWordsReverse(&_bag);
+
+//    printf("%d", res);
 
     return 0;
 }
