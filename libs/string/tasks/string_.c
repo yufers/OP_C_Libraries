@@ -465,4 +465,5 @@ void stringReverse(char *s) {
         *s = ' ';
         s += sizeof(char);
     }
+    getWordReverse()
 }
