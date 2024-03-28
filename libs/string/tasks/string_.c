@@ -207,29 +207,6 @@ void digitToStart(WordDescriptor word) {
     copyIf2(_stringBuffer, endStringBuffer, recPosition, 0, isalpha);
 }
 
-void digitInWordShift2(WordDescriptor word) {
-    digitToStart2(word);
-}
-
-void wordInStringProcessor2(char *beginString, void(*f)(WordDescriptor)) {
-    char *beginSearch = beginString;
-    WordDescriptor word;
-
-    while (getWord(beginSearch, &word)) {
-        f(word);
-        beginSearch = word.end;
-    }
-}
-
-void digitToStart2(WordDescriptor word) {
-    char *endStringBuffer = copy(word.begin, word.end,
-                                 _stringBuffer);
-    char *recPosition = copyIfReverse(_stringBuffer - 1,
-                                      endStringBuffer - 1,
-                                      word.begin, isdigit);
-    copyIf2(_stringBuffer, endStringBuffer, recPosition, 0, isalpha);
-}
-
 void numToSpace(char *source) {
     copy(source, getEndOfString(source), _stringBuffer);
     char *endSource = getEndOfString(_stringBuffer);
@@ -306,4 +283,60 @@ void replace(char *source, char *w1, char *w2) {
         readPtr = copy(readPtr, readPtrEnd, recPtr);
     }
     *readPtr = '\0';
+}
+
+int isOrdered(char *source) {
+    WordDescriptor wordRes;
+    WordDescriptor prevWordRes;
+
+
+    if (!getWord(source, &prevWordRes)) {
+        return 1;
+    }
+
+    source = prevWordRes.end;
+    while (getWord(source, &wordRes)) {
+
+
+        unsigned long len1 = prevWordRes.end - prevWordRes.begin;
+        unsigned long len2 = wordRes.end - wordRes.begin;
+        unsigned long min_len = len1;
+        if (min_len > len2) {
+            min_len = len2;
+        }
+
+        int res = memcmp(prevWordRes.begin, wordRes.begin, len1);
+
+        if (res > 0) {
+            return 0;
+        }
+        if (len1 > len2) {
+            return 0;
+        }
+
+        prevWordRes = wordRes;
+        source = wordRes.end;
+    }
+    return 1;
+}
+
+void getBagOfWords(BagOfWords *bag, char *s) {
+    WordDescriptor wordRes;
+
+    int i = 0;
+    while (getWord(s, &wordRes)) {
+        bag->words[i++] = wordRes;
+        bag->size++;
+
+        s = wordRes.end;
+    }
+}
+
+void printBagOfWordsReverse(BagOfWords *bag) {
+    for (int i = bag->size - 1; i >= 0; i--) {
+        for (char *j = bag->words[i].begin; j <= bag->words[i].end; j++) {
+            printf("%c", j);
+        }
+        printf("\n");
+    }
 }

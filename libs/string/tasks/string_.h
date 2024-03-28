@@ -28,11 +28,17 @@ char* copyIfReverse(char *rbeginSource, const char *rendSource, char *beginDesti
 //---------------------------------------------------------------------------------------------------------------
 
 #define MAX_STRING_SIZE 200
+#define MAX_N_WORDS_IN_STRING 200
 
 typedef struct WordDescriptor {
     char *begin; // позиция начала слова
     char *end; // позиция первого символа, после последнего символа
 } WordDescriptor;
+
+typedef struct BagOfWords {
+    WordDescriptor words[MAX_N_WORDS_IN_STRING];
+    size_t size;
+} BagOfWords;
 
 void removeNonLetters(char *s);
 
@@ -45,15 +51,16 @@ void digitInWordShift(WordDescriptor word);
 void wordInStringProcessor(char *beginString, void(*f)(WordDescriptor));
 void digitToStart(WordDescriptor word);
 
-void digitInWordShift2(WordDescriptor word);
-void wordInStringProcessor2(char *beginString, void(*f)(WordDescriptor));
-void digitToStart2(WordDescriptor word);
+///
 
 void numToSpace(char *source);
 
 int findWord(char *beginSearch, WordDescriptor *patternWord, WordDescriptor *resWord);
 void replace(char *source, char *w1, char *w2);
 
+int isOrdered(char *source);
 
+void getBagOfWords(BagOfWords *bag, char *s);
+void printBagOfWordsReverse(BagOfWords *bag);
 
 #endif //LAB_STRING__H

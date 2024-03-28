@@ -103,12 +103,15 @@
 int main() {
 //    test();
 
-    char s[MAX_STRING_SIZE] = "cactus elephant cactus\0";
-    char w1[] = "cactus";
-    char w2[] = "monster";
+    char s[MAX_STRING_SIZE] = "abcd abc vfdj\0";
 
-    replace(s, w1, w2);
-    printf("%s", s);
+//    BagOfWords bof;
+//    bof.size = 0;
+//    getBagOfWords(&bof, s);
+//    printBagOfWordsReverse(&bof);
+
+    int res = isOrdered(s);
+    printf("%d", res);
 
     return 0;
 }
