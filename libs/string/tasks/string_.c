@@ -216,6 +216,14 @@ int getWord(char *beginSearch, WordDescriptor *word) {
     return 1;
 }
 
+int getWordReverse(char *beginSearch, char *endSearch, WordDescriptor *word) {
+    word->begin = findNonSpaceReverse(beginSearch, endSearch);
+    if (word->begin == beginSearch)
+        return 0;
+    word->end = beginSearch;
+    return 1;
+}
+
 int getWordByComma(char *beginSearch, WordDescriptor *word) {
     word->begin = findNonComma(beginSearch);
     if (*word->begin == '\0')
@@ -441,4 +449,20 @@ void getMixedString(char *res, char *s1, char *s2) {
         }
     }
     *res = '\0';
+}
+
+void stringReverse(char *s) {
+    copy(s, getEndOfString(s), _stringBuffer);
+
+    WordDescriptor wordRes;
+    char *end = getEndOfString(_stringBuffer) + sizeof(char);
+
+    while ((end >= _stringBuffer) && getWordReverse(end, _stringBuffer,&wordRes)) {
+        end = wordRes.begin - sizeof(char);
+
+        copy(wordRes.begin, wordRes.end, s);
+        s += wordRes.end - wordRes.begin;
+        *s = ' ';
+        s += sizeof(char);
+    }
 }

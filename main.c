@@ -104,12 +104,10 @@
 int main() {
 //    test();
 
-    char s1[MAX_STRING_SIZE] = "anton abc dot alarm xxxxxxxxx\0";
-    char s2[MAX_STRING_SIZE] = "bot ark calm y r t r\0";
-    char res[MAX_STRING_SIZE];
-    getMixedString(res, s1, s2);
+    char s1[MAX_STRING_SIZE] = "anton abc dot alarm xxxxxxxxx1\0";
+    stringReverse(s1);
 
-    printf("%s", res);
+    printf("%s", s1);
 
     return 0;
 }
