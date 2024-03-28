@@ -39,6 +39,36 @@ char* findNonSpace(char *begin) {
     return ptr;
 }
 
+char* findComma(char *begin) {
+    char *ptr = begin;
+
+    while (*ptr != '\0') {
+        int res = 0;
+        res = *ptr == ',';
+        if (res) {
+            return ptr;
+        }
+
+        ptr += sizeof(char);
+    }
+    return ptr;
+}
+
+char* findNonComma(char *begin) {
+    char *ptr = begin;
+
+    while (*ptr != '\0') {
+        int res = 0;
+        res = *ptr == ',';
+        if (!res) {
+            return ptr;
+        }
+
+        ptr += sizeof(char);
+    }
+    return ptr;
+}
+
 char* findSpace(char *begin) {
     char *ptr = begin;
 
@@ -183,6 +213,14 @@ int getWord(char *beginSearch, WordDescriptor *word) {
     if (*word->begin == '\0')
         return 0;
     word->end = findSpace(word->begin);
+    return 1;
+}
+
+int getWordByComma(char *beginSearch, WordDescriptor *word) {
+    word->begin = findNonComma(beginSearch);
+    if (*word->begin == '\0')
+        return 0;
+    word->end = findComma(word->begin);
     return 1;
 }
 
@@ -345,8 +383,34 @@ void clearBagOfWords(BagOfWords *bag) {
 }
 
 void printWord(const WordDescriptor *word) {
-    for (char *j = word->begin; j <= word->end; j++) {
+    for (char *j = word->begin; j < word->end; j++) {
         printf("%c", *j);
     }
     printf("\n");
+}
+
+int countPalindroms(char *s) {
+    WordDescriptor wordRes;
+
+    int counter = 0;
+
+    while (getWordByComma(s, &wordRes)) {
+        s = wordRes.end;
+        unsigned long len = wordRes.end - wordRes.begin;
+        int is_polyndrom = 1;
+        wordRes.end -= sizeof(char);
+
+        for (int i = 0; i < len / 2; i++) {
+            if (*wordRes.begin != *wordRes.end) {
+                is_polyndrom = 0;
+                break;
+            }
+            wordRes.begin += sizeof(char);
+            wordRes.end -= sizeof(char);
+        }
+        counter += is_polyndrom;
+
+
+    }
+    return counter;
 }

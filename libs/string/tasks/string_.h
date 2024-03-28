@@ -66,4 +66,6 @@ void printBagOfWordsReverse(BagOfWords *bag);
 void printWord(const WordDescriptor *word);
 void clearBagOfWords(BagOfWords *bag);
 
+int countPalindroms(char *s);
+
 #endif //LAB_STRING__H
