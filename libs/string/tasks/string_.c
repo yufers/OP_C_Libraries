@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <string.h>
 #include <memory.h>
 #include "string_.h"
+
 
 char _stringBuffer[MAX_STRING_SIZE + 1];
 BagOfWords _bag;
@@ -84,7 +86,7 @@ char* findSpace(char *begin) {
     return ptr;
 }
 
-char* findNonSpaceReverse(char *rbegin, const char *rend) {
+char* findNonSpaceReverse(char *rbegin, char *rend) {
     char *ptr = rbegin;
     bool found = false;
 
@@ -106,7 +108,7 @@ char* findNonSpaceReverse(char *rbegin, const char *rend) {
 
 
 //
-char* findSpaceReverse(char *rbegin, const char *rend) {
+char* findSpaceReverse(char *rbegin, char *rend) {
     char *ptr = rbegin;
     bool found = false;
 
@@ -178,7 +180,7 @@ char* copyIfReverse(char *rbeginSource, const char *rendSource, char *beginDesti
 
 //---------------------------------------------------------------------------------------------------------------
 
-char* getEndOfString(const char *begin) {
+char* getEndOfString(char *begin) {
     char *end = begin;
     while (*end != '\0')
         end += sizeof(char);
@@ -236,6 +238,10 @@ void digitInWordShift(WordDescriptor word) {
     digitToStart(word);
 }
 
+void digitInWordShift2(WordDescriptor word) {
+    digitToEnd(word);
+}
+
 void wordInStringProcessor(char *beginString, void(*f)(WordDescriptor)) {
     char *beginSearch = beginString;
     WordDescriptor word;
@@ -246,7 +252,26 @@ void wordInStringProcessor(char *beginString, void(*f)(WordDescriptor)) {
     }
 }
 
+void wordInStringProcessor2(char *beginString, void(*f)(WordDescriptor)) {
+    char *beginSearch = beginString;
+    WordDescriptor word;
+
+    while (getWord(beginSearch, &word)) {
+        f(word);
+        beginSearch = word.end;
+    }
+}
+
 void digitToStart(WordDescriptor word) {
+    char *endStringBuffer = copy(word.begin, word.end,
+                                 _stringBuffer);
+    char *recPosition = copyIfReverse(endStringBuffer - 1,
+                                      _stringBuffer - 1,
+                                      word.begin, isdigit);
+    copyIf2(_stringBuffer, endStringBuffer, recPosition, 0, isalpha);
+}
+
+void digitToEnd(WordDescriptor word) {
     char *endStringBuffer = copy(word.begin, word.end,
                                  _stringBuffer);
     char *recPosition = copyIfReverse(endStringBuffer - 1,
@@ -465,5 +490,75 @@ void stringReverse(char *s) {
         *s = ' ';
         s += sizeof(char);
     }
-    getWordReverse()
+}
+
+int hasWordLetter(WordDescriptor *word, char letter) {
+    for (char *i = word->begin; i <= word->end; i += sizeof(char)) {
+        if (*i == letter) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+WordBeforeFirstWordWithAReturnCode getWordBeforeFirstWordWithA(char *source, WordDescriptor *w) {
+    WordDescriptor wordRes;
+    WordDescriptor prevWordRes;
+
+
+    if (!getWord(source, &prevWordRes)) {
+        return EMPTY_STRING;
+    }
+
+    if (hasWordLetter(&prevWordRes, 'a') || hasWordLetter(&prevWordRes, 'A')) {
+        w->begin = prevWordRes.begin;
+        w->end = prevWordRes.end;
+        return FIRST_WORD_WITH_A;
+    }
+
+    source = prevWordRes.end;
+    while (getWord(source, &wordRes)) {
+
+        if (hasWordLetter(&wordRes, 'a') || hasWordLetter(&wordRes, 'A')) {
+            w->begin = prevWordRes.begin;
+            w->end = prevWordRes.end;
+            return WORD_FOUND;
+        }
+
+        prevWordRes = wordRes;
+        source = wordRes.end;
+    }
+    return NOT_FOUND_A_WORD_WITH_A;
+}
+
+void printWordBeforeFirstWordWithA(char *s) {
+    WordDescriptor word;
+    WordBeforeFirstWordWithAReturnCode res = getWordBeforeFirstWordWithA(s, &word);
+
+    switch (res) {
+        case EMPTY_STRING:
+            printf("В строке нет слов");
+            break;
+        case FIRST_WORD_WITH_A:
+            printf("Первое слово с ’a’ является первым в строке\n");
+            printWord(&word);
+            break;
+        case WORD_FOUND:
+            printf("Имеется слово перед словом с ’a’\n");
+            printWord(&word);
+        case NOT_FOUND_A_WORD_WITH_A:
+            printf("В строке нет слов с ’a’");
+            break;
+    }
+}
+
+void assertString(const char *expected, char *got,char const *fileName, char const *funcName, int line) {
+    if (strcmp(expected, got)) {
+        fprintf(stderr, "File %s\n", fileName);
+        fprintf(stderr, "%s - failed on line %d\n", funcName, line);
+        fprintf(stderr, "Expected: \"%s\"\n", expected);
+        fprintf(stderr, "Got: \"%s\"\n\n", got);
+    } else {
+        fprintf(stderr, "%s - OK\n", funcName);
+    }
 }

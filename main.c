@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <memory.h>
 #include "libs/data_structures/vector/vector.h"
 #include "libs/string/tasks/string_.h"
 
@@ -101,13 +102,39 @@
 //    test_copyIfReverse();
 //}
 
+void testAll_getWordBeforeFirstWordWithA() {
+    WordDescriptor word;
+    char s1[] = "";
+    assert(
+            getWordBeforeFirstWordWithA(s1, &word)
+            == EMPTY_STRING
+    );
+    char s2[] = "ABC";
+    assert(
+            getWordBeforeFirstWordWithA(s2, &word)
+            == FIRST_WORD_WITH_A
+    );
+    char s3[] = "BC A";
+    assert(
+            getWordBeforeFirstWordWithA(s3, &word)
+            == WORD_FOUND
+    );
+    char got[MAX_STRING_SIZE];
+    copy(word.begin, word.end, got);
+    got[word.end - word.begin] = '\0';
+    ASSERT_STRING("BC", got);
+    char s4[] = "B Q WE YR OW IUWR";
+    assert(getWordBeforeFirstWordWithA(s4, &word) == NOT_FOUND_A_WORD_WITH_A);
+}
+
 int main() {
 //    test();
 
-    char s1[MAX_STRING_SIZE] = "anton abc dot alarm xxxxxxxxx1\0";
-    stringReverse(s1);
+    char s[MAX_STRING_SIZE] = "\0";
+    testAll_getWordBeforeFirstWordWithA();
+    printWordBeforeFirstWordWithA(s);
 
-    printf("%s", s1);
+//    printf("%c", res);
 
     return 0;
 }
