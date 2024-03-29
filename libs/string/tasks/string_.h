@@ -91,4 +91,6 @@ WordBeforeFirstWordWithAReturnCode getWordBeforeFirstWordWithA(char *source, Wor
 
 void assertString(const char *expected, char *got,char const *fileName, char const *funcName, int line) ;
 
+void findLastWord(char *s1, char *s2);
+
 #endif //INC_STRING__H
