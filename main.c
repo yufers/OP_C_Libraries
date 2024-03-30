@@ -130,11 +130,10 @@ void testAll_getWordBeforeFirstWordWithA() {
 int main() {
 //    test();
 
-    char s1[MAX_STRING_SIZE] = "anton bot bkf len\0";
-    char s2[MAX_STRING_SIZE] = "got rat len yura\0";
-    findLastWord(s1, s2);
+    char s[MAX_STRING_SIZE] = "anton2 bot bkf len anton\0";
+    int res = isEqual(s);
 
-//    printf("%c", res);
+    printf("%d", res);
 
     return 0;
 }

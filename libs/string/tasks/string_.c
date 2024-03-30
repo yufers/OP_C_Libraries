@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <memory.h>
+#include <stdlib.h>
 #include "string_.h"
 
 
@@ -378,7 +379,7 @@ int isOrdered(char *source) {
             min_len = len2;
         }
 
-        int res = memcmp(prevWordRes.begin, wordRes.begin, len1);
+        int res = memcmp(prevWordRes.begin, wordRes.begin, min_len);
 
         if (res > 0) {
             return 0;
@@ -588,4 +589,41 @@ void findLastWord(char *s1, char *s2) {
             }
         }
     }
+}
+
+int compareWordDescriptors(const void *wordPtr1, const void *wordPtr2) {
+    WordDescriptor *word1 = (WordDescriptor *)wordPtr1;
+    WordDescriptor *word2 = (WordDescriptor *)wordPtr2;
+
+    unsigned long len1 = word1->end - word1->begin;
+    unsigned long len2 = word2->end - word2->begin;
+    unsigned long min_len = len1;
+    if (min_len > len2) {
+        min_len = len2;
+    }
+
+    int res = memcmp(word1->begin, word2->begin, min_len);
+
+    if (res == 0) {
+        if (len1 != len2) {
+            res = len1 > len2 ? 1 : -1;
+        }
+    }
+    return res;
+}
+
+
+int isEqual(char *s) {
+    clearBagOfWords(&_bag);
+    getBagOfWords(&_bag, s);
+    qsort(_bag.words, _bag.size, sizeof(WordDescriptor), compareWordDescriptors);
+
+    for (int i = 1; i <= _bag.size; i++) {
+        int res = compareWordDescriptors(&_bag.words[i - 1], &_bag.words[i]);
+
+        if (res == 0) {
+            return 1;
+        }
+    }
+    return 0;
 }
