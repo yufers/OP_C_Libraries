@@ -130,11 +130,10 @@ void testAll_getWordBeforeFirstWordWithA() {
 int main() {
 //    test();
 
-    char s1[MAX_STRING_SIZE] = "anton bot z\0";
-    char s2[MAX_STRING_SIZE] = "otaz\0";
-    int res = isStringIncludeLetters(s1, s2);
+    char s1[MAX_STRING_SIZE] = "an576yu 21hu 82gh9\0";
+    wordInStringProcessor(s1, &digitInWordShift2);
 
-    printf("%d", res);
+    printf("%s", s1);
 
     return 0;
 }

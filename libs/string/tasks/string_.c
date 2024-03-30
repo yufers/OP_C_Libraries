@@ -254,16 +254,6 @@ void wordInStringProcessor(char *beginString, void(*f)(WordDescriptor)) {
     }
 }
 
-void wordInStringProcessor2(char *beginString, void(*f)(WordDescriptor)) {
-    char *beginSearch = beginString;
-    WordDescriptor word;
-
-    while (getWord(beginSearch, &word)) {
-        f(word);
-        beginSearch = word.end;
-    }
-}
-
 void digitToStart(WordDescriptor word) {
     char *endStringBuffer = copy(word.begin, word.end,
                                  _stringBuffer);
@@ -276,10 +266,9 @@ void digitToStart(WordDescriptor word) {
 void digitToEnd(WordDescriptor word) {
     char *endStringBuffer = copy(word.begin, word.end,
                                  _stringBuffer);
-    char *recPosition = copyIfReverse(endStringBuffer - 1,
-                                      _stringBuffer - 1,
-                                      word.begin, isdigit);
-    copyIf2(_stringBuffer, endStringBuffer, recPosition, 0, isalpha);
+    char *recPosition = copyIf(_stringBuffer, endStringBuffer - 1, word.begin, isalpha);
+    copyIf(_stringBuffer, endStringBuffer - 1, recPosition, isdigit);
+    *word.end = ' ';
 }
 
 void numToSpace(char *source) {
