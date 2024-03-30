@@ -97,4 +97,6 @@ int hasSameWords(char *s);
 
 int hasWordsWithSameLetters(char *s);
 
+void getStringWithoutEndWords(char *s);
+
 #endif //INC_STRING__H

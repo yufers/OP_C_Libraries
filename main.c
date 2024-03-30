@@ -131,9 +131,9 @@ int main() {
 //    test();
 
     char s[MAX_STRING_SIZE] = "anton bot bkf len anton\0";
-    int res = hasWordsWithSameLetters(s);
+    getStringWithoutEndWords(s);
 
-    printf("%d", res);
+    printf("%s", s);
 
     return 0;
 }
