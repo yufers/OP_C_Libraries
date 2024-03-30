@@ -130,14 +130,10 @@ void testAll_getWordBeforeFirstWordWithA() {
 int main() {
 //    test();
 
-    char s1[MAX_STRING_SIZE] = "bot anton len size\0";
-    char s2[MAX_STRING_SIZE] = "word get anton dot\0";
-    char res[MAX_STRING_SIZE];
-    int found = findWordBefore(s1, s2, res);
+    char s[MAX_STRING_SIZE] = "bot anton len size\0";
+    deletePalindromes(s);
 
-    if (found) {
-        printf("%s", res);
-    }
+    printf("%s", s);
 
     return 0;
 }

@@ -423,6 +423,22 @@ void printWord(const WordDescriptor *word) {
     printf("\n");
 }
 
+int isPalindrom(WordDescriptor *wordRes) {
+    int is_polyndrom = 1;
+    unsigned long len = (*wordRes).end - (*wordRes).begin;
+    (*wordRes).end -= sizeof(char);
+
+    for (int i = 0; i < len / 2; i++) {
+        if (*(*wordRes).begin != *(*wordRes).end) {
+            is_polyndrom = 0;
+            break;
+        }
+        (*wordRes).begin += sizeof(char);
+        (*wordRes).end -= sizeof(char);
+    }
+    return is_polyndrom;
+}
+
 int countPalindroms(char *s) {
     WordDescriptor wordRes;
 
@@ -430,19 +446,7 @@ int countPalindroms(char *s) {
 
     while (getWordByComma(s, &wordRes)) {
         s = wordRes.end;
-        unsigned long len = wordRes.end - wordRes.begin;
-        int is_polyndrom = 1;
-        wordRes.end -= sizeof(char);
-
-        for (int i = 0; i < len / 2; i++) {
-            if (*wordRes.begin != *wordRes.end) {
-                is_polyndrom = 0;
-                break;
-            }
-            wordRes.begin += sizeof(char);
-            wordRes.end -= sizeof(char);
-        }
-        counter += is_polyndrom;
+        counter += isPalindrom(&wordRes);
     }
     return counter;
 }
@@ -699,4 +703,24 @@ int findWordBefore(char *s1, char *s2, char *res) {
         }
     }
     return 0;
+}
+
+void deletePalindromes(char *s) {
+    copy(s, getEndOfString(s), _stringBuffer);
+    clearBagOfWords(&_bag);
+    getBagOfWords(&_bag, _stringBuffer);
+
+    for (int i = 0; i < _bag.size; i++) {
+        WordDescriptor lineOneWord = _bag.words[i];
+
+        int isPal = isPalindrom(&lineOneWord);
+
+        if (!isPal) {
+            copy(lineOneWord.begin, lineOneWord.end, s);
+            s += lineOneWord.end - lineOneWord.begin + 1;
+            *s = ' ';
+            s += sizeof(char);
+        }
+    }
+    *s = '\0';
 }
