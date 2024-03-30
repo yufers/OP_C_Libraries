@@ -8,6 +8,7 @@
 
 
 char _stringBuffer[MAX_STRING_SIZE + 1];
+char _stringBuffer2[MAX_STRING_SIZE + 1];
 BagOfWords _bag;
 BagOfWords _bag2;
 
@@ -755,4 +756,30 @@ void appendMissingWords(char *s1, char *s2) {
         copy(word.begin, word.end, resStr);
         resStr += word.end - word.begin + 1;
     }
+}
+
+int isStringIncludeLetters(char *s, char *word) {
+    copy(s, getEndOfString(s), _stringBuffer);
+    copy(word, getEndOfString(word), _stringBuffer2);
+
+    size_t lenStr = strlen_(_stringBuffer);
+    qsort(_stringBuffer, lenStr, sizeof(char), compareLetters);
+    size_t lenStr1 = strlen_(_stringBuffer2);
+    qsort(_stringBuffer2, lenStr1, sizeof(char), compareLetters);
+
+    int counter = 0;
+    char *endStrPtr = _stringBuffer + lenStr;
+    char *currChar = _stringBuffer2;
+    for (char *i = _stringBuffer; i <= endStrPtr; i += sizeof(char)) {
+        if (*i == *currChar) {
+            counter++;
+
+            if (counter == lenStr1) {
+                return 1;
+            }
+            currChar += sizeof(char);
+        }
+
+    }
+    return 0;
 }

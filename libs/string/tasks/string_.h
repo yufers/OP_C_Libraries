@@ -50,6 +50,7 @@ typedef enum WordBeforeFirstWordWithAReturnCode {
 } WordBeforeFirstWordWithAReturnCode;
 
 extern char _stringBuffer[MAX_STRING_SIZE + 1];
+extern char _stringBuffer2[MAX_STRING_SIZE + 1];
 extern BagOfWords _bag;
 extern BagOfWords _bag2;
 
@@ -104,5 +105,7 @@ int findWordBefore(char *s1, char *s2, char *res);
 void deletePalindromes(char *s);
 
 void appendMissingWords(char *s1, char *s2);
+
+int isStringIncludeLetters(char *s, char *word);
 
 #endif //INC_STRING__H
