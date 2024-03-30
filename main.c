@@ -130,8 +130,8 @@ void testAll_getWordBeforeFirstWordWithA() {
 int main() {
 //    test();
 
-    char s[MAX_STRING_SIZE] = "anton2 bot bkf len anton\0";
-    int res = isEqual(s);
+    char s[MAX_STRING_SIZE] = "anton bot bkf len anton\0";
+    int res = hasWordsWithSameLetters(s);
 
     printf("%d", res);
 

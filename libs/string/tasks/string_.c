@@ -613,9 +613,37 @@ int compareWordDescriptors(const void *wordPtr1, const void *wordPtr2) {
 }
 
 
-int isEqual(char *s) {
+int hasSameWords(char *s) {
     clearBagOfWords(&_bag);
     getBagOfWords(&_bag, s);
+    qsort(_bag.words, _bag.size, sizeof(WordDescriptor), compareWordDescriptors);
+
+    for (int i = 1; i <= _bag.size; i++) {
+        int res = compareWordDescriptors(&_bag.words[i - 1], &_bag.words[i]);
+
+        if (res == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int compareLetters(const void* charPtr1, const void* charPtr2) {
+    const char *char1 = (const char*)charPtr1;
+    const char *char2 = (const char*)charPtr2;
+
+    return *char1 - *char2;
+}
+
+int hasWordsWithSameLetters(char *s) {
+    copy(s, getEndOfString(s), _stringBuffer);
+    clearBagOfWords(&_bag);
+    getBagOfWords(&_bag, _stringBuffer);
+
+    for (int i = 0; i <= _bag.size; i++) {
+        qsort(_bag.words[i].begin, _bag.words[i].end - _bag.words[i].begin, sizeof(char), compareLetters);
+    }
+
     qsort(_bag.words, _bag.size, sizeof(WordDescriptor), compareWordDescriptors);
 
     for (int i = 1; i <= _bag.size; i++) {

@@ -93,6 +93,8 @@ void assertString(const char *expected, char *got,char const *fileName, char con
 
 void findLastWord(char *s1, char *s2);
 
-int isEqual(char *s);
+int hasSameWords(char *s);
+
+int hasWordsWithSameLetters(char *s);
 
 #endif //INC_STRING__H
