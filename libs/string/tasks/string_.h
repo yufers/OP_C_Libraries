@@ -99,4 +99,6 @@ int hasWordsWithSameLetters(char *s);
 
 void getStringWithoutEndWords(char *s);
 
+int findWordBefore(char *s1, char *s2, char *res);
+
 #endif //INC_STRING__H

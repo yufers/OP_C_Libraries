@@ -130,10 +130,14 @@ void testAll_getWordBeforeFirstWordWithA() {
 int main() {
 //    test();
 
-    char s[MAX_STRING_SIZE] = "anton bot bkf len anton\0";
-    getStringWithoutEndWords(s);
+    char s1[MAX_STRING_SIZE] = "bot anton len size\0";
+    char s2[MAX_STRING_SIZE] = "word get anton dot\0";
+    char res[MAX_STRING_SIZE];
+    int found = findWordBefore(s1, s2, res);
 
-    printf("%s", s);
+    if (found) {
+        printf("%s", res);
+    }
 
     return 0;
 }

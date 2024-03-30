@@ -675,3 +675,28 @@ void getStringWithoutEndWords(char *s) {
     }
     *s = '\0';
 }
+
+int findWordBefore(char *s1, char *s2, char *res) {
+    clearBagOfWords(&_bag);
+    clearBagOfWords(&_bag2);
+    getBagOfWords(&_bag, s1);
+    getBagOfWords(&_bag2, s2);
+
+    int get;
+    for (int i = 1; i < _bag.size - 1; i++) {
+        WordDescriptor lineOneWord = _bag.words[i];
+        for (int j = 0; j < _bag2.size - 1; j++) {
+            WordDescriptor lineTwoWord = _bag2.words[j];
+            get = compareWordDescriptors(&lineOneWord, &lineTwoWord);
+            
+            if (get == 0) {
+                WordDescriptor resWord = _bag.words[i - 1];
+                copy(resWord.begin, resWord.end, res);
+                res += resWord.end - resWord.begin;
+                *res = '\0';
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
