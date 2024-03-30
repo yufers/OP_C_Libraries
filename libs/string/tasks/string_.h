@@ -103,4 +103,6 @@ int findWordBefore(char *s1, char *s2, char *res);
 
 void deletePalindromes(char *s);
 
+void appendMissingWords(char *s1, char *s2);
+
 #endif //INC_STRING__H

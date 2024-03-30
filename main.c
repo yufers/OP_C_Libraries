@@ -130,10 +130,11 @@ void testAll_getWordBeforeFirstWordWithA() {
 int main() {
 //    test();
 
-    char s[MAX_STRING_SIZE] = "bot anton len size\0";
-    deletePalindromes(s);
+    char s1[MAX_STRING_SIZE] = "anton bot\0";
+    char s2[MAX_STRING_SIZE] = "get size let dot got\0";
+    appendMissingWords(s1, s2);
 
-    printf("%s", s);
+    printf("%s", s1);
 
     return 0;
 }

@@ -724,3 +724,35 @@ void deletePalindromes(char *s) {
     }
     *s = '\0';
 }
+
+void appendMissingWords(char *s1, char *s2) {
+    clearBagOfWords(&_bag);
+    clearBagOfWords(&_bag2);
+    getBagOfWords(&_bag, s1);
+    getBagOfWords(&_bag2, s2);
+
+    size_t min_len = 0;
+    BagOfWords *maxPtr;
+    char *resStr;
+
+    if (_bag.size < _bag2.size) {
+        min_len = _bag.size;
+        maxPtr = &_bag2;
+        resStr = s1;
+    } else {
+        min_len = _bag2.size;
+        maxPtr = &_bag;
+        resStr = s2;
+    }
+
+    resStr += strlen_(resStr);
+    *resStr = ' ';
+    resStr += sizeof(char);
+
+    WordDescriptor word;
+    for (int i = min_len; i < maxPtr->size; i++) {
+        word = maxPtr->words[i];
+        copy(word.begin, word.end, resStr);
+        resStr += word.end - word.begin + 1;
+    }
+}
