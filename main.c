@@ -4,6 +4,7 @@
 #include <memory.h>
 #include "libs/data_structures/vector/vector.h"
 #include "libs/string/tasks/string_.h"
+#include "libs/string/string_test.h"
 
 
 //size_t test_strlen_() {
@@ -102,38 +103,11 @@
 //    test_copyIfReverse();
 //}
 
-void testAll_getWordBeforeFirstWordWithA() {
-    WordDescriptor word;
-    char s1[] = "";
-    assert(
-            getWordBeforeFirstWordWithA(s1, &word)
-            == EMPTY_STRING
-    );
-    char s2[] = "ABC";
-    assert(
-            getWordBeforeFirstWordWithA(s2, &word)
-            == FIRST_WORD_WITH_A
-    );
-    char s3[] = "BC A";
-    assert(
-            getWordBeforeFirstWordWithA(s3, &word)
-            == WORD_FOUND
-    );
-    char got[MAX_STRING_SIZE];
-    copy(word.begin, word.end, got);
-    got[word.end - word.begin] = '\0';
-    ASSERT_STRING("BC", got);
-    char s4[] = "B Q WE YR OW IUWR";
-    assert(getWordBeforeFirstWordWithA(s4, &word) == NOT_FOUND_A_WORD_WITH_A);
-}
+
 
 int main() {
 //    test();
-
-    char s1[MAX_STRING_SIZE] = "an576yu 21hu 82gh9\0";
-    wordInStringProcessor(s1, &digitInWordShift2);
-
-    printf("%s", s1);
+    testAll();
 
     return 0;
 }
