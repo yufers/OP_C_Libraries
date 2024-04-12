@@ -381,10 +381,8 @@ int isOrdered(char *source) {
 void getBagOfWords(BagOfWords *bag, char *s) {
     WordDescriptor wordRes;
 
-    int i = 0;
     while (getWord(s, &wordRes)) {
-        bag->words[i++] = wordRes;
-        bag->size++;
+        bag->words[bag->size++] = wordRes;
 
         s = wordRes.end;
     }
@@ -592,6 +590,16 @@ int compareWordDescriptors(const void *wordPtr1, const void *wordPtr2) {
     return res;
 }
 
+int compareWordDescriptorsByLen(const void *wordPtr1, const void *wordPtr2) {
+    WordDescriptor *word1 = (WordDescriptor *)wordPtr1;
+    WordDescriptor *word2 = (WordDescriptor *)wordPtr2;
+
+    unsigned long len1 = word1->end - word1->begin;
+    unsigned long len2 = word2->end - word2->begin;
+
+    return len2 - len1;
+}
+
 
 int hasSameWords(char *s) {
     clearBagOfWords(&_bag);
@@ -756,7 +764,6 @@ int isStringIncludeLetters(char *s, char *word) {
             }
             currChar += sizeof(char);
         }
-
     }
     return 0;
 }

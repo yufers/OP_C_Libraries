@@ -135,7 +135,7 @@ void testAll_isStringIncludeLetters() {
     assert(found == 1);
 }
 
-void testAll() {
+void testStringAll() {
     testAll_removeNonLetters();
     testAll_removeAdjacentEqualLetters();
     testAll_numToSpace();

@@ -3,6 +3,6 @@
 
 #define ASSERT_STRING(expected, got) assertString(expected, got, __FILE__, __FUNCTION__, __LINE__);
 
-void testAll();
+void testStringAll();
 
 #endif //LAB_STRING_TEST_H
