@@ -11,7 +11,7 @@ size_t readFileToBuff(char *filePath, char *buff, size_t buffSize);
 
 //
 
-//
+size_t exponentialNumToNum(char *s1, char *s2);
 
 //
 

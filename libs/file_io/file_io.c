@@ -13,6 +13,31 @@ size_t readFileToBuff(char *filePath, char *buff, size_t buffSize) {
     return size;
 }
 
+//
+
+size_t exponentialNumToNum(char *file_path_in, char *file_path_out) {
+    FILE *fp = fopen(file_path_in, "r");
+    FILE *fd = fopen(file_path_out, "w+");
+
+    if (fp == NULL) {
+        fprintf(stderr, "file cannot be opened");
+        exit(1);
+    }
+
+    size_t counter = 0;
+
+    float val;
+    while (fscanf(fp, "%e", &val) > 0) {
+        fprintf(fd, "%.2f\n", val);
+    }
+    fclose(fp);
+    fclose(fd);
+
+    return counter;
+}
+
+//
+
 int isPatternInWord(WordDescriptor word, const char *pattern) {
     int counter = 0;
     char *curPatternPtr = pattern;

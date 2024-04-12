@@ -8,6 +8,25 @@
 
 char testBuff[MAX_LINE_SIZE];
 
+//
+
+FILE testAll_exponentialNumToNum() {
+    FILE *fp = fopen ("file_test1.txt", "w+");
+
+    for (int i = 0; i < 10; i++) {
+        fprintf(fp, "0.%d7686878468e+%d\n", i, i);
+    }
+    fclose(fp);
+
+    size_t res = exponentialNumToNum("file_test1.txt", "file_test2.txt");
+    size_t fileSize = readFileToBuff("file_test2.txt", testBuff, sizeof(testBuff));
+    assert(res == 10);
+    assert(fileSize == 56);
+    ASSERT_STRING("anton rock anton gamma anton rock anton rock anton gamma", testBuff)
+}
+
+//
+
 FILE testAll_saveFileWithRequiredLen() {
     FILE *fp = fopen ("file_test1.txt", "w+");
     char word[4] = "bot";
@@ -52,6 +71,9 @@ FILE testAll_saveFileWithLongestWord() {
 }
 
 void testFileAll() {
+    //
+    testAll_exponentialNumToNum();
+    //
     testAll_saveFileWithRequiredLen();
     testAll_saveFileWithLongestWord();
 }
