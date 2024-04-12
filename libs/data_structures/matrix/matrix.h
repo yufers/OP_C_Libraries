@@ -124,4 +124,6 @@ int getVectorIndexWithMaxAngle(matrix m, int *b);
 long long getScalarProductRowAndCol(matrix m, int i, int j);
 long long getSpecialScalarProduct(matrix m, int n);
 
+void swap_matrix(int *a, int *b, matrix *m, int col1, int col2);
+
 #endif //LAB_MATRIX_H

@@ -9,14 +9,14 @@ extern char _fileReadBuffer[MAX_LINE_SIZE];
 
 size_t readFileToBuff(char *filePath, char *buff, size_t buffSize);
 
-//
+void rowsToColumnsInMatrix(char *filePath);
 
-size_t exponentialNumToNum(char *s1, char *s2);
+size_t exponentialNumToNum(char *filePath, char *fileOutputPath);
 
-size_t saveFileWithMathematicalExpression(char *s1, char *s2);
+size_t saveFileWithMathematicalExpression(char *filePath, char *fileOutputPath);
 
-size_t saveFileWithRequiredLen(char *s1, char *s2, char *pattern);
+size_t saveFileWithRequiredLen(char *filePath, char *fileOutputPath, char *pattern);
 
-size_t saveFileWithLongestWord(char *s1, char *s2);
+size_t saveFileWithLongestWord(char *filePath, char *fileOutputPath);
 
 #endif //LAB_FILE_IO_H
