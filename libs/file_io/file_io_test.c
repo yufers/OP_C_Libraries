@@ -20,12 +20,60 @@ FILE testAll_exponentialNumToNum() {
 
     size_t res = exponentialNumToNum("file_test1.txt", "file_test2.txt");
     size_t fileSize = readFileToBuff("file_test2.txt", testBuff, sizeof(testBuff));
-    assert(res == 10);
-    assert(fileSize == 56);
-    ASSERT_STRING("anton rock anton gamma anton rock anton rock anton gamma", testBuff)
+    assert(res == 0);
+    assert(fileSize == 86);
+    ASSERT_STRING("0.08\n"
+                  "1.77\n"
+                  "27.69\n"
+                  "376.87\n"
+                  "4768.69\n"
+                  "57686.88\n"
+                  "676868.81\n"
+                  "7768688.00\n"
+                  "87686880.00\n"
+                  "976868800.00\n", testBuff)
 }
 
-//
+FILE testAll_saveFileWithMathematicalExpression() {
+    FILE *fp = fopen ("file_test1.txt", "w+");
+
+    for (int i = 0; i < 10; i++) {
+        if (i % 2 == 0) {
+            fprintf(fp, "2 + %d\n", i, i);
+        } else if (i % 3 == 0) {
+            fprintf(fp, "9 - %d * %d\n", i, i);
+        } else {
+            fprintf(fp, "%d + %d / 5\n", i, i);
+        }
+    }
+
+    fclose(fp);
+
+    size_t res = saveFileWithMathematicalExpression("file_test1.txt", "file_test1.txt");
+    size_t fileSize = readFileToBuff("file_test1.txt", testBuff, sizeof(testBuff));
+    assert(res == 10);
+    assert(fileSize == 103);
+    ASSERT_STRING("2 + 0\n"
+                  "1 + 1 / 5\n"
+                  "2 + 2\n"
+                  "9 - 3 * 3\n"
+                  "2 + 4\n"
+                  "5 + 5 / 5\n"
+                  "2 + 6\n"
+                  "7 + 7 / 5\n"
+                  "2 + 8\n"
+                  "9 - 9 * 9\n"
+                  "2\n"
+                  "1\n"
+                  "4\n"
+                  "0\n"
+                  "6\n"
+                  "6\n"
+                  "8\n"
+                  "8\n"
+                  "10\n"
+                  "-72\n", testBuff)
+}
 
 FILE testAll_saveFileWithRequiredLen() {
     FILE *fp = fopen ("file_test1.txt", "w+");
@@ -73,7 +121,7 @@ FILE testAll_saveFileWithLongestWord() {
 void testFileAll() {
     //
     testAll_exponentialNumToNum();
-    //
+    testAll_saveFileWithMathematicalExpression();
     testAll_saveFileWithRequiredLen();
     testAll_saveFileWithLongestWord();
 }

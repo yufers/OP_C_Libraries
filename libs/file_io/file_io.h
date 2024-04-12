@@ -13,7 +13,7 @@ size_t readFileToBuff(char *filePath, char *buff, size_t buffSize);
 
 size_t exponentialNumToNum(char *s1, char *s2);
 
-//
+size_t saveFileWithMathematicalExpression(char *s1, char *s2);
 
 size_t saveFileWithRequiredLen(char *s1, char *s2, char *pattern);
 

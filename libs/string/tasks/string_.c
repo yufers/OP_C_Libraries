@@ -213,7 +213,7 @@ void removeAdjacentEqualLetters(char *s) {
 
 int getWord(char *beginSearch, WordDescriptor *word) {
     word->begin = findNonSpace(beginSearch);
-    if (*word->begin == '\0')
+    if ((*word->begin == '\0') || (*word->begin == '\n'))
         return 0;
     word->end = findSpace(word->begin);
     return 1;
