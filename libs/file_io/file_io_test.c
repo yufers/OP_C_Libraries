@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <assert.h>
 #include "file_io.h"
 #include "file_io_test.h"
@@ -141,10 +140,37 @@ FILE testAll_saveFileWithLongestWord() {
     ASSERT_STRING("anton rock anton gamma anton rock anton rock anton gamma", testBuff)
 }
 
+//
+
+FILE testAll_binFileSort() {
+    FILE *fp = fopen("binary_file_test1.bin", "wb");
+
+    for (int i = 0; i < 10; i++) {
+        int g = -i;
+        if (i % 2 == 0) {
+            fwrite(&i, sizeof(int), 1, fp);
+        } else {
+            fwrite(&g, sizeof(int), 1, fp);
+        }
+    }
+    fclose(fp);
+
+    binFileSort("binary_file_test1.bin");
+    size_t fileSize = readFileBinaryToBuff("binary_file_test1.bin", testBuff, sizeof(testBuff));
+    int expected[] = {8, 6, 4, 2, 0, -1, -3, -5, -7, -9};
+
+    assert(fileSize == sizeof(expected));
+    for (size_t i = 0; i < fileSize / sizeof(int); i++) {
+        assert(((int *) testBuff)[i] == expected[i]);
+    }
+}
+
 void testFileAll() {
     testAll_rowsToColumnsInMatrix();
     testAll_exponentialNumToNum();
     testAll_saveFileWithMathematicalExpression();
     testAll_saveFileWithRequiredLen();
     testAll_saveFileWithLongestWord();
+    //
+    testAll_binFileSort();
 }
