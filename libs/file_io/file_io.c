@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
+#include <math.h>
 #include "file_io.h"
 #include "../data_structures/matrix/matrix.h"
 #include "../string/tasks/string_.h"
@@ -11,6 +13,13 @@ int compareInts(const void *intPtr1, const void *intPtr2) {
     int *num2 = (int *)intPtr2;
 
     return *num2 - *num1;
+}
+
+int compareAthletes(const void *intPtr1, const void *intPtr2) {
+    athletesInfo *a1 = (athletesInfo *)intPtr1;
+    athletesInfo *a2 = (athletesInfo *)intPtr2;
+
+    return a2->rating - a1->rating;
 }
 
 size_t readFileToBuff(char *filePath, char *buff, size_t buffSize) {
@@ -38,18 +47,10 @@ void rowsToColumnsInMatrix(char *filePath) {
         exit(1);
     }
 
-    int n;
-    int x;
+    int n, res;
     fscanf(fp, "%d", &n);
 
-    matrix matrix = getMemMatrix(n, n);
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            fscanf(fp, "%d", &x);
-            matrix.values[i][j] = x;
-        }
-    }
+    matrix matrix = readMatrixFromStream(fp, n, &res);
 
     fclose(fp);
 
@@ -70,6 +71,44 @@ void rowsToColumnsInMatrix(char *filePath) {
 
     fclose(fw);
     freeMemMatrix(&matrix);
+}
+
+matrix readMatrixFromStream(FILE *fp, int n, int *res) {
+    matrix matrix = getMemMatrix(n, n);
+
+    int x, count;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            count = fscanf(fp, "%d", &x);
+
+            if (count == 0) {
+                *res = 0;
+                return matrix;
+            }
+            matrix.values[i][j] = x;
+        }
+    }
+    *res = 1;
+    return matrix;
+}
+
+matrix readMatrixFromBinaryStream(FILE *fp, int n, int *res) {
+    matrix matrix = getMemMatrix(n, n);
+
+    int x, count;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            count = fread(&x, sizeof(int), 1, fp);
+
+            if (count == 0) {
+                *res = 0;
+                return matrix;
+            }
+            matrix.values[i][j] = x;
+        }
+    }
+    *res = 1;
+    return matrix;
 }
 
 size_t exponentialNumToNum(char *file_path_in, char *file_path_out) {
@@ -258,7 +297,47 @@ size_t saveFileWithLongestWord(char *file_path_in, char *file_path_out) {
     return counter;
 }
 
-//
+void removeZeroPolynomial(char *filePath, int x) {
+    FILE *fp = fopen(filePath, "r+b");
+    if (fp == NULL) {
+        fprintf(stderr, "file cannot be opened");
+        exit(1);
+    }
+
+    Polynomial pols[1000];
+
+    int count = fread(&pols, sizeof(Polynomial), sizeof(pols) / sizeof(Polynomial), fp);
+    int sum = 0;
+    int startPolIdx = 0;
+    for (int i = 0; i < count; i++) {
+        Polynomial pol = pols[i];
+        sum += pol.k * pow(x, pol.pow);
+
+        if (pol.pow == 0) {
+            if (sum == 0) {
+                for (int j = startPolIdx; j <= i; j++) {
+                    pols[j].k = 0;
+                }
+            }
+            startPolIdx = i + 1;
+            sum = 0;
+        }
+    }
+    fclose(fp);
+
+    FILE *fw = fopen(filePath, "wb");
+    if (fp == NULL) {
+        fprintf(stderr, "file cannot be opened");
+        exit(1);
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (pols[i].k != 0) {
+            fwrite(&pols[i], sizeof(Polynomial), 1, fw);
+        }
+    }
+    fclose(fw);
+}
 
 void binFileSort(char *filePath) {
     FILE *fp = fopen(filePath, "r+b");
@@ -285,6 +364,148 @@ void binFileSort(char *filePath) {
         fwrite(ptr++, sizeof(int), 1, fp);
     }
     fclose(fp);
+}
+
+void nonSymetricalMatrixesInTranspose(char *filePath) {
+    FILE *fp = fopen(filePath, "r+b");
+    if (fp == NULL) {
+        fprintf(stderr, "file cannot be opened");
+        exit(1);
+    }
+
+    long size = getFileSize(fp);
+
+    int n, res;
+    fread(&n, sizeof(int), 1, fp);
+
+    matrix matrix;
+
+    fpos_t posInStream;
+    int posRes;
+    bool isSymmetric;
+    do {
+        posRes = fgetpos(fp, &posInStream);
+        if (posInStream >= size) {
+            break;
+        }
+
+        if (posRes) {
+            fprintf(stderr, "filed to get pos");
+            exit(1);
+        }
+
+        matrix = readMatrixFromBinaryStream(fp, n, &res);
+        if (!res) {
+            break;
+        }
+
+        isSymmetric = isSymmetricMatrix(&matrix);
+        if (!isSymmetric) {
+            transposeSquareMatrix(&matrix);
+
+            posRes = fsetpos(fp, &posInStream);
+            if (posRes) {
+                fprintf(stderr, "filed to get pos");
+                exit(1);
+            }
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    fwrite(&matrix.values[i][j], sizeof(int), 1, fp);
+                }
+            }
+            fflush(fp);
+        }
+    } while (res);
+
+    fclose(fp);
+    freeMemMatrix(&matrix);
+}
+
+long getFileSize(FILE *fp) {
+    fseek(fp, 0, SEEK_END); // seek to end of file
+    long size = ftell(fp); // get current file pointer
+    fseek(fp, 0, SEEK_SET);
+    return size;
+}
+
+void creatingTeam(char *filePath, int neededAthletes) {
+    FILE *fp = fopen(filePath, "r+b");
+    if (fp == NULL) {
+        fprintf(stderr, "file cannot be opened");
+        exit(1);
+    }
+
+    int n;
+    fread(&n, sizeof(int), 1, fp);
+    athletesInfo res[n];
+
+    fread(res, sizeof(athletesInfo), n, fp);
+    qsort(res, n, sizeof(athletesInfo), compareAthletes);
+
+    fseek(fp, 0, SEEK_SET);
+    fwrite(&neededAthletes, sizeof(int), 1, fp);
+    fwrite(res, sizeof(athletesInfo), neededAthletes, fp);
+
+    ftruncate(fileno(fp), ftell(fp));
+
+    fclose(fp);
+}
+
+void ordersInfo(char *filePath1, char *filePath2) {
+    FILE *fp1 = fopen(filePath1, "r+b");
+    if (fp1 == NULL) {
+        fprintf(stderr, "file cannot be opened");
+        exit(1);
+    }
+    FILE *fp2 = fopen(filePath2, "r+b");
+    if (fp2 == NULL) {
+        fprintf(stderr, "file cannot be opened");
+        exit(1);
+    }
+
+    int n1;
+    fread(&n1, sizeof(int), 1, fp1);
+    goodsInStockInfo res1[n1];
+    int n2;
+    fread(&n2, sizeof(int), 1, fp2);
+    orderInfo res2[n2];
+
+    fread(res1, sizeof(goodsInStockInfo), n1, fp1);
+    fread(res2, sizeof(orderInfo), n2, fp2);
+
+    fclose(fp1);
+    fclose(fp2);
+
+    int counter = 0;
+    int result;
+    for (int i = 0; i < n1; i++) {
+        for (int j = 0; j < n2; j++) {
+            result = strcmp(res1[i].name, res2[j].name);
+
+            if (result != 0) {
+                continue;
+            }
+
+            res1[i].quantity -= res2[j].quantity;
+            if (res1[i].quantity > 0) {
+                counter++;
+            }
+        }
+    }
+
+    FILE *fw1 = fopen(filePath1, "wb");
+    if (fp1 == NULL) {
+        fprintf(stderr, "file cannot be opened");
+        exit(1);
+    }
+
+    fwrite(&counter,  sizeof(int), 1, fw1);
+    for (int i = 0; i < n1; i++) {
+        if (res1[i].quantity > 0) {
+            fwrite(&res1[i], sizeof(goodsInStockInfo), 1, fw1);
+        }
+    }
+    fclose(fw1);
 }
 
 

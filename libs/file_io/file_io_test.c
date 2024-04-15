@@ -7,7 +7,7 @@
 
 char testBuff[MAX_LINE_SIZE];
 
-FILE testAll_rowsToColumnsInMatrix() {
+void testAll_rowsToColumnsInMatrix() {
     FILE *fp = fopen ("file_test1.txt", "w+");
 
     fprintf(fp, "%d\n", 5);
@@ -32,7 +32,7 @@ FILE testAll_rowsToColumnsInMatrix() {
                   "15 25 35 45 55 \n", testBuff)
 }
 
-FILE testAll_exponentialNumToNum() {
+void testAll_exponentialNumToNum() {
     FILE *fp = fopen ("file_test1.txt", "w+");
 
     for (int i = 0; i < 10; i++) {
@@ -56,7 +56,7 @@ FILE testAll_exponentialNumToNum() {
                   "976868800.00\n", testBuff)
 }
 
-FILE testAll_saveFileWithMathematicalExpression() {
+void testAll_saveFileWithMathematicalExpression() {
     FILE *fp = fopen ("file_test1.txt", "w+");
 
     for (int i = 0; i < 10; i++) {
@@ -97,7 +97,7 @@ FILE testAll_saveFileWithMathematicalExpression() {
                   "-72\n", testBuff)
 }
 
-FILE testAll_saveFileWithRequiredLen() {
+void testAll_saveFileWithRequiredLen() {
     FILE *fp = fopen ("file_test1.txt", "w+");
     char word[4] = "bot";
 
@@ -119,7 +119,7 @@ FILE testAll_saveFileWithRequiredLen() {
     ASSERT_STRING("bot bot bot bot bot", testBuff)
 }
 
-FILE testAll_saveFileWithLongestWord() {
+void testAll_saveFileWithLongestWord() {
     FILE *fp = fopen ("file_test1.txt", "w+");
 
     for (int i = 0; i < 10; i++) {
@@ -140,9 +140,39 @@ FILE testAll_saveFileWithLongestWord() {
     ASSERT_STRING("anton rock anton gamma anton rock anton rock anton gamma", testBuff)
 }
 
-//
+void testAll_removeZeroPolynomial() {
+    FILE *fp = fopen("binary_file_test1.bin", "wb");
 
-FILE testAll_binFileSort() {
+    int x = 4;
+    Polynomial poly[] = { {3, 1},{2, 1},{1, 1},{0, 1},
+                          {5, 1},{4, 2},{1, 1},{0, 2},
+                          {7, 1},{5, 1},{3, 1},{0, 1},
+                          {19, 1},{5, 1},{8, 1},{0, 1}};
+
+    fwrite(poly, sizeof(Polynomial), sizeof(poly) / sizeof(Polynomial), fp);
+    fclose(fp);
+
+    removeZeroPolynomial("binary_file_test1.bin", -2);
+
+    FILE *fd = fopen("binary_file_test1.bin", "rb");
+
+    Polynomial res[100];
+
+    int countRead = fread(res, sizeof(Polynomial), sizeof(res) / sizeof(Polynomial), fd);
+
+    Polynomial expected[] = { {3, 1},{2, 1},{1, 1},{0, 1},
+                          {7, 1},{5, 1},{3, 1},{0, 1},
+                          {19, 1},{5, 1},{8, 1},{0, 1}};
+
+    assert((sizeof(expected) / sizeof(Polynomial)) == countRead);
+    for (int i = 0; i < countRead; i++) {
+        assert(expected[i].k == res[i].k);
+        assert(expected[i].pow == res[i].pow);
+    }
+    fclose(fd);
+}
+
+void testAll_binFileSort() {
     FILE *fp = fopen("binary_file_test1.bin", "wb");
 
     for (int i = 0; i < 10; i++) {
@@ -165,12 +195,217 @@ FILE testAll_binFileSort() {
     }
 }
 
+void testAll_nonSymetricalMatrixesInTranspose() {
+    FILE *fp = fopen("binary_file_test1.bin", "wb");
+
+    int x = 5;
+    fwrite(&x, sizeof(int), 1, fp);
+
+    int val;
+    for (int z = 0; z < 10; z++) {
+        if (z % 2 == 0) {
+            for (int i = 1; i <= 5; i++) {
+                for (int j = 1; j <= 5; j++) {
+                    val = i * 10 + j;
+                    fwrite(&val, sizeof(int), 1, fp);
+                }
+            }
+        } else if (z % 3 == 0) {
+            for (int i = 2; i <= 6; i++) {
+                for (int j = 2; j <= 6; j++) {
+                    val = i * 10 + j;
+                    fwrite(&val, sizeof(int), 1, fp);
+                }
+            }
+        } else {
+            int arrSymMatr[] = {10 , 0, 5, 2, 0,
+                         0, 10, 0, 5, 2,
+                         5, 0, 10, 0, 5,
+                         2, 5,0, 10, 0,
+                         0, 2, 5, 0 ,10};
+            matrix m = createMatrixFromArray(arrSymMatr, 5, 5);
+            for (int i = 0; i < 5; i++) {
+                for (int j = 0; j < 5; j++) {
+                    fwrite(&m.values[i][j], sizeof(int), 1, fp);
+                }
+            }
+            freeMemMatrix(&m);
+        }
+    }
+    fclose(fp);
+
+    nonSymetricalMatrixesInTranspose("binary_file_test1.bin");
+    size_t fileSize = readFileBinaryToBuff("binary_file_test1.bin", testBuff, sizeof(testBuff));
+
+    int expected[] = {5,
+
+                      11, 21, 31, 41, 51,
+                      12, 22, 32, 42, 52,
+                      13, 23, 33, 43, 53,
+                      14, 24, 34, 44, 54,
+                      15, 25, 35, 45, 55,
+
+                      10, 0, 5, 2, 0,
+                      0, 10, 0, 5, 2,
+                      5, 0, 10, 0, 5,
+                      2, 5, 0, 10, 0,
+                      0, 2, 5, 0, 10,
+
+                      11, 21, 31, 41, 51,
+                      12, 22, 32, 42, 52,
+                      13, 23, 33, 43, 53,
+                      14, 24, 34, 44, 54,
+                      15, 25, 35, 45, 55,
+
+                      22, 32, 42, 52, 62,
+                      23, 33, 43, 53, 63,
+                      24, 34, 44, 54, 64,
+                      25, 35, 45, 55, 65,
+                      26, 36, 46, 56, 66,
+
+                      11, 21, 31, 41, 51,
+                      12, 22, 32, 42, 52,
+                      13, 23, 33, 43, 53,
+                      14, 24, 34, 44, 54,
+                      15, 25, 35, 45, 55,
+
+                      10, 0, 5, 2, 0,
+                      0, 10, 0, 5, 2,
+                      5, 0, 10, 0, 5,
+                      2, 5, 0, 10, 0,
+                      0, 2, 5, 0, 10,
+
+                      11, 21, 31, 41, 51,
+                      12, 22, 32, 42, 52,
+                      13, 23, 33, 43, 53,
+                      14, 24, 34, 44, 54,
+                      15, 25, 35, 45, 55,
+
+                      10, 0, 5, 2, 0,
+                      0, 10, 0, 5, 2,
+                      5, 0, 10, 0, 5,
+                      2, 5, 0, 10, 0,
+                      0, 2, 5, 0, 10,
+
+                      11, 21, 31, 41, 51,
+                      12, 22, 32, 42, 52,
+                      13, 23, 33, 43, 53,
+                      14, 24, 34, 44, 54,
+                      15, 25, 35, 45, 55,
+
+                      22, 32, 42, 52, 62,
+                      23, 33, 43, 53, 63,
+                      24, 34, 44, 54, 64,
+                      25, 35, 45, 55, 65,
+                      26, 36, 46, 56, 66};
+
+    assert(fileSize == sizeof(expected));
+    for (size_t i = 0; i < fileSize / sizeof(int); i++) {
+        assert(((int *) testBuff)[i] == expected[i]);
+    }
+}
+
+void testAll_creatingTeam() {
+    FILE *fp = fopen("binary_file_test1.bin", "wb");
+
+    int x = 8;
+    fwrite(&x, sizeof(int), 1, fp);
+
+    athletesInfo athletes[] = {{"John Smith 5\0", 5},
+                              {"John Smith 11\0", 11},
+                              {"John Smith 8\0", 8},
+                              {"John Smith 9\0", 9},
+                               {"John Smith 6\0", 6},
+                               {"John Smith 7\0", 7},
+                               {"John Smith 10\0", 10},
+                               {"John Smith 12\0", 12}};
+
+    fwrite(athletes, sizeof(athletesInfo), 8, fp);
+
+    fclose(fp);
+
+    creatingTeam("binary_file_test1.bin", 3);
+
+    FILE *fd = fopen("binary_file_test1.bin", "rb");
+    int n;
+    fread(&n, sizeof(int), 1, fd);
+    athletesInfo res[n];
+
+    int countRead = fread(res, sizeof(athletesInfo), n, fd);
+
+    athletesInfo expectedAthletes[] = {{"John Smith 12\0", 12},
+                               {"John Smith 11\0", 11},
+                               {"John Smith 10\0", 10}};
+    assert(3 == n);
+    assert(countRead == n);
+    for (int i = 0; i < countRead; i++) {
+        ASSERT_STRING(expectedAthletes[i].name, res[i].name)
+        assert(expectedAthletes[i].rating == res[i].rating);
+    }
+    fclose(fd);
+}
+
+void testAll_ordersInfo() {
+    FILE *fp1 = fopen("binary_file_test1.bin", "wb");
+    FILE *fp2 = fopen("binary_file_test2.bin", "wb");
+
+    goodsInStockInfo goodsInfo[] = {{"Apples\0", 5, 100, 8},
+                                    {"Beer\0", 15, 150, 30},
+                                    {"carrots\0", 3, 50, 100},
+                                    {"potato\0", 10, 70, 200},
+                                    {"cheese\0", 40, 500, 10},
+                                    {"beef\0", 100, 1000, 21}};
+
+    orderInfo orders[] = {{"Apples\0", 5},
+                          {"beef\0", 21},
+                          {"carrots\0", 100},
+                          {"cheese\0", 10},
+                          {"potato\0", 40},
+                          {"Beer\0", 21}};
+
+    int x1 = sizeof(goodsInfo) / sizeof(goodsInStockInfo);
+    fwrite(&x1, sizeof(int), 1, fp1);
+
+    int x2 = sizeof(orders) / sizeof(orderInfo);
+    fwrite(&x2, sizeof(int), 1, fp2);
+
+    fwrite(goodsInfo, sizeof(goodsInStockInfo), x1, fp1);
+    fclose(fp1);
+    fwrite(orders, sizeof(orderInfo), x2, fp2);
+    fclose(fp2);
+
+    ordersInfo("binary_file_test1.bin", "binary_file_test2.bin");
+
+    FILE *fd = fopen("binary_file_test1.bin", "rb");
+    int n;
+    fread(&n, sizeof(int), 1, fd);
+    goodsInStockInfo res[n];
+
+    int countRead = fread(res, sizeof(goodsInStockInfo), n, fd);
+
+    goodsInStockInfo expected[] = {{"Apples\0", 5, 100, 3},
+                                    {"Beer\0", 15, 150, 9},
+                                    {"potato\0", 10, 70, 160}};
+    assert((sizeof(expected) / sizeof(goodsInStockInfo)) == n);
+    assert(countRead == n);
+    for (int i = 0; i < countRead; i++) {
+        ASSERT_STRING(expected[i].name, res[i].name)
+        assert(expected[i].priceForOne == res[i].priceForOne);
+        assert(expected[i].totalPrice == res[i].totalPrice);
+        assert(expected[i].quantity == res[i].quantity);
+    }
+    fclose(fd);
+}
+
 void testFileAll() {
     testAll_rowsToColumnsInMatrix();
     testAll_exponentialNumToNum();
     testAll_saveFileWithMathematicalExpression();
     testAll_saveFileWithRequiredLen();
     testAll_saveFileWithLongestWord();
-    //
+    testAll_removeZeroPolynomial();
     testAll_binFileSort();
+    testAll_nonSymetricalMatrixesInTranspose();
+    testAll_creatingTeam();
+    testAll_ordersInfo();
 }
