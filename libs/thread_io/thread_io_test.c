@@ -2,6 +2,7 @@
 #include <assert.h>
 #include "thread_io.h"
 #include "thread_io_test.h"
+#include "../data_structures/matrix/matrix.h"
 
 void testAll_fill_matrix() {
     int n = 3;
@@ -101,9 +102,11 @@ void testAll_submatricesNum() {
     int n = 3;
     int m = 3;
 
-    int matrix[3][3] = {{1,0,1},{1,1,0},{1,1,0}};
+    int test[3][3] = {{1,0,1},{1,1,0},{1,1,0}};
+    matrix newMatrix = createMatrixFromArray(*test, n, m);
 
-    submatricesNum(*matrix, n, m);
+    int res = submatricesNum(&newMatrix);
+    assert(res == 13);
 }
 
 void testThreadAll() {
@@ -111,5 +114,5 @@ void testThreadAll() {
     testAll_liveGame();
     testAll_MedianFilter();
     testAll_showVisitStats();
-    //testAll_submatricesNum();
+    testAll_submatricesNum();
 }
