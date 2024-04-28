@@ -6,6 +6,7 @@
 #include "../string/tasks/string_.h"
 #include "../data_structures/vector/vectorVoid.h"
 #include "../data_structures/matrix/matrix.h"
+#include "../file_io/file_io.h"
 
 typedef struct DomainRecord {
     long counter;
@@ -44,6 +45,10 @@ char* minStringNum(char *pattern);
 
 vectorVoid maxThree(int *nums, int len);
 
-void strShuffle(char *s, int indices);
+char* strShuffle(char *symbols, int *indices, int len);
+
+size_t fileWithSmallerValues(char *fileInputPath, char *fileOutputPath, int n);
+
+void outputFileInChunks(char *fileInputPath, int n);
 
 #endif //LAB_THREAD_IO_H

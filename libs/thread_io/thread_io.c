@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <signal.h>
+#include <unistd.h>
+#include <conio.h>
 
 #include "thread_io.h"
-#include "../string/tasks/string_.h"
-#include "../data_structures/vector/vectorVoid.h"
 #include "../data_structures/vector/vector.h"
-#include "../data_structures/matrix/matrix.h"
 
 #define STATS_HEADER "cpdomains = ["
 #define STATS_END "]"
@@ -402,7 +402,70 @@ vectorVoid maxThree(int *nums, int len) {
     return res;
 }
 
-void strShuffle(char *s, int indices) {
-    int len = sizeof(indices);
-    qsort(&indices, len, sizeof(int), compareIntsThread);
+char* strShuffle(char *symbols, int *indices, int len) {
+    char *res = malloc(sizeof(char) * (len + 1));
+
+    for (int i = 0; i < len; i++) {
+        char l = symbols[i];
+        int r = indices[i];
+        res[r] = l;
+    }
+    res[len] = '\0';
+
+    return res;
+}
+
+size_t fileWithSmallerValues(char *fileInputPath, char *fileOutputPath, int n) {
+    FILE *fp = fopen(fileInputPath, "r");
+    FILE *fd = fopen(fileOutputPath, "w+");
+
+    if (fp == NULL) {
+        fprintf(stderr, "Input file cannot be opened");
+        exit(1);
+    }
+    if (fd == NULL) {
+        fprintf(stderr, "Output file cannot be opened");
+        exit(1);
+    }
+
+    size_t counter = 0;
+
+    int val;
+    while (fscanf(fp, "%d", &val) > 0) {
+        if (val < n) {
+            fprintf(fd, "%d\n", val);
+            counter++;
+        }
+    }
+    fclose(fp);
+    fclose(fd);
+
+    return counter;
+}
+
+void outputFileInChunks(char *fileInputPath, int n) {
+    FILE *fp = fopen(fileInputPath, "r");
+
+    if (fp == NULL) {
+        fprintf(stderr, "Input file cannot be opened");
+        exit(1);
+    }
+
+    int counter = n;
+    while (fgets(_fileReadBuffer, sizeof(_fileReadBuffer), fp) != NULL) {
+        printf("%s", _fileReadBuffer);
+
+        if (--counter == 0) {
+            counter = n;
+            printf("Press Ctrl+C to continue...");
+            while (1) {
+                if (getch() == 3) {
+                    printf("\r                           \r");
+                    break;
+                }
+            }
+
+        }
+    }
+    fclose(fp);
 }

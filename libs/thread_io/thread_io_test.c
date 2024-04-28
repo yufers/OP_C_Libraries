@@ -1,8 +1,8 @@
 #include <stdio.h>
+#include <time.h>
 #include <assert.h>
 #include "thread_io.h"
 #include "thread_io_test.h"
-#include "../data_structures/matrix/matrix.h"
 
 void testAll_fill_matrix() {
     int n = 3;
@@ -141,10 +141,45 @@ void testAll_maxThree() {
 }
 
 void testAll_strShuffle() {
-    char *s = "abc";
-    int indices[] = {0,1,2};
+    char s[] = "abap";
+    int indices[] = {0,3,2,1};
 
-    strShuffle(s, *indices);
+    char *res = strShuffle(s, indices, 4);
+
+    ASSERT_STRING("apab\0", res)
+}
+
+void testAll_fileWithSmallerValues() {
+    int n = 700;
+    srand((unsigned) time(NULL));
+    FILE *fp = fopen ("file_test1.txt", "w+");
+
+    int expArray[1000];
+    int idx = 0;
+    for (int i = 0; i < 1000; i++) {
+        int val = rand();
+        if (val < n) {
+            expArray[idx++] = val;
+        }
+        fprintf(fp, "%d\n", val);
+    }
+    fclose(fp);
+
+    size_t res = fileWithSmallerValues("file_test1.txt", "file_test2.txt", n);
+    assert(idx == res);
+}
+
+void testAll_outputFileInChunks() {
+    int n = 15;
+    srand((unsigned) time(NULL));
+    FILE *fp = fopen ("file_test3.txt", "w+");
+
+    for (int i = 0; i < 1000; i++) {
+        fprintf(fp, "%d\n", i);
+    }
+    fclose(fp);
+
+    outputFileInChunks("file_test3.txt", n);
 }
 
 void testThreadAll() {
@@ -155,5 +190,7 @@ void testThreadAll() {
     testAll_submatricesNum();
     testAll_minStringNum();
     testAll_maxThree();
-    //testAll_strShuffle();
+    testAll_strShuffle();
+    testAll_fileWithSmallerValues();
+    testAll_outputFileInChunks();
 }
