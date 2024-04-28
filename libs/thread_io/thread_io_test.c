@@ -120,6 +120,33 @@ void testAll_minStringNum() {
     ASSERT_STRING("4321", res2)
 }
 
+void testAll_maxThree() {
+    int nums[6] = {3,2,1,6,0,5};
+
+    vectorVoid res = maxThree(nums, sizeof(nums) / sizeof(int));
+
+//    for (int i = 0; i < res.size; i++) {
+//        TreeItem t;
+//        getVectorValueV(&res, i, &t);
+//        printf("%d:%d:%d\n", t.level, t.value, t.idx);
+//    }
+
+    int test[9] = {6,3,5,-1,2,0,-1,-1,1};
+    assert(sizeof(test) / sizeof(int) == res.size);
+    for (int i = 0; i < res.size; i++) {
+        TreeItem treeItem;
+        getVectorValueV(&res, i, &treeItem);
+        assert(test[i] == treeItem.value);
+    }
+}
+
+void testAll_strShuffle() {
+    char *s = "abc";
+    int indices[] = {0,1,2};
+
+    strShuffle(s, *indices);
+}
+
 void testThreadAll() {
     testAll_fill_matrix();
     testAll_liveGame();
@@ -127,4 +154,6 @@ void testThreadAll() {
     testAll_showVisitStats();
     testAll_submatricesNum();
     testAll_minStringNum();
+    testAll_maxThree();
+    //testAll_strShuffle();
 }

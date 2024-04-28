@@ -9,10 +9,15 @@
 #include "../data_structures/vector/vector.h"
 #include "../data_structures/matrix/matrix.h"
 
-
-
 #define STATS_HEADER "cpdomains = ["
 #define STATS_END "]"
+
+int compareIntsThread(const void *intPtr1, const void *intPtr2) {
+    int *num1 = (int *)intPtr1;
+    int *num2 = (int *)intPtr2;
+
+    return *num2 - *num1;
+}
 
 int compareDomainCounterNames(const void *domainCounterPtr1, const void *domainCounterPtr2) {
     DomainRecord *domainCounter1 = (DomainRecord *)domainCounterPtr1;
@@ -35,6 +40,19 @@ int compareDomainCounterNames(const void *domainCounterPtr1, const void *domainC
         }
     }
     return res;
+}
+
+int compareTreeItemByLevel(const void *treeItemPtr1, const void *treeItemPtr2) {
+    TreeItem *treeItem1 = (TreeItem *)treeItemPtr1;
+    TreeItem *treeItem2 = (TreeItem *)treeItemPtr2;
+
+    int diffLevel = treeItem1->level - treeItem2->level;
+
+    if (diffLevel == 0) {
+        return treeItem1->idx - treeItem2->idx;
+    }
+
+    return diffLevel;
 }
 
 int compareInts1(const void *intPtr1, const void *intPtr2) {
@@ -334,4 +352,57 @@ char* minStringNum(char *pattern) {
     }
     res[len + 1] = '\0';
     return res;
+}
+
+int f1(int *nums, int start, int max) {
+    int newMax1 = 0;
+
+    return newMax1;
+}
+
+void maxThreeImpl(int *nums, int level, int start, int end, int type, int *idx, vectorVoid *res) {
+    (*idx)++;
+    if (end < start) {
+        TreeItem t = {level, -1, type, *idx};
+        pushBackV(res, &t);
+        return;
+    }
+
+    if (end == start) {
+        TreeItem t = {level, nums[end], type, *idx};
+        pushBackV(res, &t);
+        return;
+    }
+
+    int max = INT_MIN;
+    int maxIdx;
+
+    for (int i = start; i <= end; i++) {
+        if (max < nums[i]) {
+            max = nums[i];
+            maxIdx = i;
+        }
+    }
+
+    TreeItem t = {level, max, type, *idx};
+    pushBackV(res, &t);
+
+
+    maxThreeImpl(nums, level + 1, start, maxIdx - 1, 1, idx, res);
+    maxThreeImpl(nums, level + 1, maxIdx + 1, end, 2, idx, res);
+}
+
+vectorVoid maxThree(int *nums, int len) {
+    vectorVoid res = createVectorV(5, sizeof(TreeItem));
+    int idx = 0;
+    maxThreeImpl(nums, 0, 0, len - 1, 0, &idx, &res);
+
+    qsort(res.data, res.size, sizeof(TreeItem), compareTreeItemByLevel);
+
+    return res;
+}
+
+void strShuffle(char *s, int indices) {
+    int len = sizeof(indices);
+    qsort(&indices, len, sizeof(int), compareIntsThread);
 }
