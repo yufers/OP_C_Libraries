@@ -21,3 +21,4 @@ target_link_libraries(lab algorithms)
 target_link_libraries(lab string)
 target_link_libraries(lab file_io)
 target_link_libraries(lab thread_io)
+
